@@ -11,8 +11,19 @@ window.addEventListener('load', () => {
     }
 })
 
+/* FALTA EL BACKGROUND DEL BODY CUANDO NO SE MUESTRA LA CARD */
+/*ver si en css se pueden crear etiquetas personalizadas para el color de fondo*/
+
+const body = document.getElementById('body')
 const weatherCityContainer = document.querySelector('.weather-city-container');
 const weatherCard = document.querySelector('.weather-card');
+const weatherDetails = document.querySelector('.weather-details');
+const humidityDiv = document.querySelector('.humidity'), windDiv = document.querySelector('.wind');
+const sunsetSunriseDiv = document.querySelector('.sunrise-sunset-container');
+const sunriseDiv = document.querySelector('.sunrise-div'), sunsetDiv = document.querySelector('.sunset-div');
+const clearCardContent = () => {
+    weatherCard.innerHTML = '', humidityDiv.innerHTML = '', windDiv.innerHTML = '', sunriseDiv.innerHTML = '', sunsetDiv.innerHTML = '';
+}
 /* Consulta el clima de acuerdo a la ciudad que se ingrese */
 const searchButton = document.querySelector('.city-name-input button');
 searchButton.addEventListener('click', () => {
@@ -20,9 +31,9 @@ searchButton.addEventListener('click', () => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${APIKey}&lang=${lang}`)
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {    
-            if(data.cod === 200) weatherCityContainer.style.height = '480px'; weatherCityContainer.style.opacity = '1'; /* heigt: 450px */
-            weatherCard.innerHTML = '';
-            weatherCityContainer.style.backgroundImage = '';    
+            if(data.cod === 200) weatherCityContainer.style.height = '480px'; weatherCityContainer.style.opacity = '1'; 
+            clearCardContent();
+            weatherCityContainer.style.backgroundImage = 'none';    
             renderWeatherData(data);  
 
         }).catch(error => console.error(error));
@@ -35,8 +46,8 @@ searchByLatLot.addEventListener('click', () => {
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {
             if(data.cod === 200) weatherCityContainer.style.height = '480px'; weatherCityContainer.style.opacity = '1';
-            weatherCard.innerHTML = '';
-            weatherCityContainer.style.backgroundImage = '';    
+            clearCardContent();
+            weatherCityContainer.style.backgroundImage = 'none';    
             document.querySelector('.city-name-input input').value = '';
             renderWeatherData(data);
 
@@ -57,7 +68,7 @@ const renderWeatherData = (data) => {
 
     const countryTimeUTC = document.createElement('p');
     countryTimeUTC.classList.add('city-utc-time');
-    countryTimeUTC.textContent = 'Hora actual: ' + currentTime;
+    countryTimeUTC.textContent = currentTime;
     weatherCard.appendChild(countryTimeUTC);
 
     const weatherImg = document.createElement('img');
@@ -117,36 +128,17 @@ const renderWeatherData = (data) => {
     temperatureDescriptionData.innerHTML = `${data.weather[0].description}`;
     weatherCard.appendChild(temperatureDescriptionData);
 
-    const weatherDetails = document.createElement('div');
-    weatherDetails.classList.add('weather-details');
-
-    const humidityDiv = document.createElement('div');
-    humidityDiv.classList.add('humidity');
-    weatherDetails.appendChild(humidityDiv);
-    const humidityContent = document.createElement('div');
-    humidityContent.classList.add('text');
-    humidityDiv.appendChild(humidityContent);
     const humidityValue = document.createElement('span');
     humidityValue.innerHTML = `${data.main.humidity}% <p>Humedad</p>`;
-    humidityContent.appendChild(humidityValue);
-
-    const windDiv = document.createElement('div');
-    windDiv.classList.add('wind');
-    weatherDetails.appendChild(windDiv);
-    const windContent = document.createElement('div');
-    windContent.classList.add('text');
-    windDiv.appendChild(windContent);
+    humidityDiv.appendChild(humidityValue);
     const windValue = document.createElement('span');
     windValue.innerHTML = `${parseInt(data.wind.speed)} Km/h <p>Viento</p>`;
-    windContent.appendChild(windValue);
-
+    windDiv.appendChild(windValue);
     weatherCard.appendChild(weatherDetails);
   
     const sunriseTimeData = data;
-    const sunsetTimeData = data;  
-    
-    const { sys: { sunrise }, timezone } = sunriseTimeData;
-    const { sys: { sunset } } = sunsetTimeData;
+    const sunsetTimeData = data;      
+    const { sys: { sunrise }, timezone } = sunriseTimeData, { sys: { sunset } } = sunsetTimeData
     /* Se obtiene la diferencia entre sunrise, sunset y timezone en UNIX Epoch (01/01/1970 00:00:00 UTC)  */
     const sunriseTime = new Date((sunrise + timezone) * 1000);
     const sunsetTime = new Date((sunset + timezone) * 1000);
@@ -154,8 +146,7 @@ const renderWeatherData = (data) => {
     /* Función que convierte el valor tipo Date a un String de 2 dígitos */    
     const timeDataFormat = (value) => {
         return ('0' + value).slice(-2);
-    };
-      
+    };      
     /* Se obtiene la hora en tiempo UTC con los métodos correspondientes de Date */
     const sunriseHour = timeDataFormat(sunriseTime.getUTCHours()); 
     const sunsetHour = timeDataFormat(sunsetTime.getUTCHours());
@@ -169,9 +160,11 @@ const renderWeatherData = (data) => {
     const integerSunriseValue = parseInt(sunriseHour);
     /* Valida si es de día o de noche dependiendo la condición (hora) */
     if(currentTimeHour >= integerSunriseValue && currentTimeHour < integerSunsetValue) {
-        weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';    
+        weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
+        body.style.background = 'rgb(41,216,235)'; body.style.background = 'linear-gradient(180deg, rgba(41,216,235,1) 0%, rgba(35,64,82,0) 100%)';  
     } else { 
         weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
+        body.style.background = 'background: rgb(35,64,82)'; body.style.background = 'linear-gradient(180deg, rgba(35,64,82,1) 0%, rgba(41,216,235,0) 100%)';
         switch (data.weather[0].main) {
             case 'Clear':
                 weatherImg.src = 'svg/clear-night.svg';
@@ -182,34 +175,23 @@ const renderWeatherData = (data) => {
         }
     } 
 
-    const sunsetSunriseDiv = document.createElement('div');
-    sunsetSunriseDiv.classList.add('sunrise-sunset-container');
-
-    const sunriseDiv = document.createElement('div');
-    sunriseDiv.classList.add('sunrise-div');
     const sunriseContent = document.createElement('span');
     sunriseContent.textContent = `${sunriseHour}:${sunriseMinutes}:${sunriseSeconds} AM`;
     sunriseDiv.appendChild(sunriseContent);
-    sunsetSunriseDiv.appendChild(sunriseDiv);
-
-    const sunsetDiv = document.createElement('div');
-    sunsetDiv.classList.add('sunset-div');
     const sunsetContent = document.createElement('span');
     sunsetContent.textContent = `${sunsetHour}:${sunsetMinutes}:${sunsetSeconds} PM`;
     sunsetDiv.appendChild(sunsetContent);
-    sunsetSunriseDiv.appendChild(sunsetDiv);
 
     weatherCard.appendChild(sunsetSunriseDiv);    
-    weatherCard.classList.add('fadeIn');
-    weatherDetails.classList.add('fadeIn');
+    weatherCard.classList.add('fadeIn'), weatherDetails.classList.add('fadeIn'), sunsetSunriseDiv.classList.add('fadeIn');
 }
 
 /* Muestra un alert */
 const alertSpanText = document.querySelectorAll('.alertSpan');
-const alertSpan = () => {  
-    weatherCityContainer.style.opacity = '1';
-    weatherCityContainer.style.height = '60px';    
-    weatherCard.innerHTML = '';
+const alertSpan = () => { 
+    body.style.background = '#091F43'; 
+    weatherCityContainer.style.backgroundImage = 'none', weatherCityContainer.style.opacity = '1', weatherCityContainer.style.height = '60px';    
+    clearCardContent();
     $('.alertSpan').css('visibility', 'visible'); 
     setTimeout(() => {
         $('.alertSpan').css('visibility', 'hidden'); 

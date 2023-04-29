@@ -4,7 +4,10 @@
     margin: 0; padding: 0; border: 0;
     outline: none; box-sizing: border-box; font-family: 'Roboto', sans-serif;
 }
-body { min-height: 100vh; max-height: 120vh; background: #06283D; padding: 1em; }
+body { 
+    min-height: 100vh; max-height: 120vh; padding: 1em; transition: 0.3s;
+    background: #091F43;
+}
 
 /* General display */
 body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity, .wind, .sunrise-sunset-container, .sunset-div, .sunrise-div {
@@ -13,11 +16,12 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
 .container { flex-wrap: wrap; }
 
 .city-name-input, .lat-lot-input { /* Inputs Container */
-    max-height: 100px; width: 500px;
-    background: white; padding: 1em;
-    border-radius: 15px; text-align: center;
+    max-height: 100px; width: 525px;
+    background: white; padding: 0.5rem 1em 0.5rem 1em;
+    border-radius: 10px; text-align: center;
     box-shadow: -5px -5px 5px 0 rgba(0,0,0,0.5); transition: 0.3s;    
 }
+.lat-lot-input { width: 550px; }
 .city-name-input input, .lat-lot-input input {
     font-size: 18px; text-transform: capitalize; 
     margin-left: 15px; font-style: italic;
@@ -27,7 +31,7 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
     font-size: 16px; font-weight: 500; text-transform: none; 
 }
 .city-name-input button, .lat-lot-input button {
-    border-radius: 50% !important; font-size: 18px; margin-left: 15px !important; transition: 0.3s;
+    border-radius: 50% !important; font-size: 16px; margin-left: 15px !important; transition: 0.3s;
 }
 .city-name-input button::after, .lat-lot-input button::after { content: "\f002"; font-family: FontAwesome; }
 .city-name-input button:hover, .lat-lot-input button:hover { box-shadow: -2.5px -2.5px 5px 0 rgba(0,0,0,0.5); }
@@ -38,10 +42,10 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
 .lat-lot-input span { font-size: 18px; }
 .separator { 
     text-align: center; font-style: normal; font-weight: bold;
-    color: crimson; margin: 0 10px 0 10px;
+    color: crimson; margin: 0 10px 0 10px; font-size: 12px;
 }
 #info { 
-    width: 100%; font-size: 11px; text-align: center; 
+    width: 100%; font-size: 12px; text-align: center; font-weight: bold;
     color: crimson; display: inline-block; margin-bottom: 5px;
 }
 
@@ -49,7 +53,7 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
 .weather-city-container {
     position: relative; width: 400px; height: 60px; max-height: 480px; 
     color: white; text-align: center; font-weight: bold;
-    padding: 20px; margin: 20px auto; opacity: 0; overflow: hidden; border-radius: 10px; transition: 0.3s;
+    padding: 20px; margin: 20px auto; opacity: 0; overflow: hidden; border-radius: 15px; transition: 0.3s;
     text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 5px #000;
     box-shadow: -5px -5px 5px 0 rgba(0,0,0,0.5); 
     background-color: white; background-size: cover; background-repeat: no-repeat; 
@@ -60,7 +64,7 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
 }
 .weather-city-name { text-align: left; } /* City Name */
 .city-utc-time { /* UTC Time */
-    font-size: 12px; text-align: right; right: 0; 
+    font-size: 11px; text-align: right; right: 0; font-style: italic;
 }
 .weather-card img { width: 45%; } /* Weather Img */
 .weather-card .temperature { /* Temperature */
@@ -126,5 +130,20 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
 
 /* Responsive */
 @media screen and (max-width: 1200px) {
-    .separator { width: 100%; margin: 5px 0 5px 0; }    
+    .separator { width: 100%; margin: 5px 0 5px 0; font-size: 10px; }    
+    /* .lat-lot-input { margin-right: 15em; } */
+    /*Falta que latlotinput se posiciones debajo del 'o'  y no al lado de la Card */
+}
+@media screen and (max-width: 980px ) {
+    #info { font-size: 8.5px; font-weight: bold; white-space: nowrap; }
+    .city-name-input input { margin-left: 0; }
+    .city-name-input input, .lat-lot-input input { font-size: 16px; }
+    .city-name-input input::placeholder, .lat-lot-input input::placeholder { font-size: 14px; }
+    .lat-lot-input span { font-size: 16px; }
+    .city-name-input button, .lat-lot-input button {
+        font-size: 14px; margin-left: 10px !important;
+    }
+    .city-name-input::before, .lat-lot-input::before {
+        font-size: 16px; margin-right: 10px !important;
+    }    
 }
