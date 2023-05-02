@@ -11,9 +11,6 @@ window.addEventListener('load', () => {
     }
 })
 
-/* FALTA EL BACKGROUND DEL BODY CUANDO NO SE MUESTRA LA CARD */
-/*ver si en css se pueden crear etiquetas personalizadas para el color de fondo*/
-
 const body = document.getElementById('body')
 const weatherCityContainer = document.querySelector('.weather-city-container');
 const weatherCard = document.querySelector('.weather-card');
@@ -189,7 +186,7 @@ const renderWeatherData = (data) => {
 /* Muestra un alert */
 const alertSpanText = document.querySelectorAll('.alertSpan');
 const alertSpan = () => { 
-    body.style.background = '#091F43'; 
+    body.style.background = 'rgb(94,84,219)'; body.style.background = 'linear-gradient(180deg, rgba(94,84,219,1) 0%, rgba(77,188,215,1) 80%)'; 
     weatherCityContainer.style.backgroundImage = 'none', weatherCityContainer.style.opacity = '1', weatherCityContainer.style.height = '60px';    
     clearCardContent();
     $('.alertSpan').css('visibility', 'visible'); 
