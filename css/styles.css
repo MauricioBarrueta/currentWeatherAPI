@@ -67,7 +67,7 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
 .city-utc-time { /* UTC Time */
     font-size: 11px; text-align: right; right: 0; font-style: italic;
 }
-.weather-card img { width: 45%; scale: 1.1; } /* Weather Img */
+.weather-card img { width: 45%; } /* Weather Img */
 .weather-card .temperature { /* Temperature */
     position: relative; margin: 0 auto;  
     font-size: 55px;   
@@ -116,7 +116,7 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
 .sunset-div>span::before { content: "\f186"; }
 
 .weather-city-container .alertSpan { 
-    width: 100%; text-align: center; font-size: 14px; text-shadow: none;
+    width: 100%; text-align: center; font-size: 12px; text-shadow: none;
     color: crimson; position: absolute; right: 0;
 }
 .weather-city-container .alertSpan::before, .alertSpan::after {
