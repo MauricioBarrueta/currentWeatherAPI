@@ -62,6 +62,7 @@ const renderWeatherData = (data) => {
     const dataTimezone = data.timezone;
     const timezoneInMinutes = dataTimezone / 60; /* 60seg */
     const currentTime = moment().utcOffset(timezoneInMinutes).format('HH:mm:ss A'); 
+    const currentMinutes = moment().minutes();
 
     const countryTimeUTC = document.createElement('p');
     countryTimeUTC.classList.add('city-utc-time');
@@ -103,7 +104,7 @@ const renderWeatherData = (data) => {
     /* Función que obtiene los primeros 2 dígitos de la temperatura para evitar el error de la API (temperatura de 3 dígitos) */
     const formatLonLatTempValues = (tempValue) => {
         return String(tempValue).substring(0, 2);  
-    }
+    }   
     const temperatureData = document.createElement('p');
     temperatureData.classList.add('temperature');
     temperatureData.innerHTML = `${parseInt(formatLonLatTempValues(data.main.temp))}<span>°C</span>`;
@@ -150,11 +151,11 @@ const renderWeatherData = (data) => {
     const sunriseMinutes = timeDataFormat(sunriseTime.getUTCMinutes()); 
     const sunsetMinutes = timeDataFormat(sunsetTime.getUTCMinutes());
     const sunriseSeconds = timeDataFormat(sunriseTime.getUTCSeconds()); 
-    const sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds());    
+    const sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds());   
     
-    const currentTimeHour = parseInt(currentTime);    
-    const integerSunsetValue = parseInt(sunsetHour);
-    const integerSunriseValue = parseInt(sunriseHour);
+    const currentTimeHour = parseInt(currentTime), currentTimeMinutes = parseInt(currentMinutes);    
+    const integerSunsetValue = parseInt(sunsetHour), integerSunriseValue = parseInt(sunriseHour), intSunriseMin = parseInt(sunriseMinutes), 
+        intSunsetMin = parseInt(sunsetMinutes);
     /* Valida si es de día o de noche dependiendo la condición (hora) */
     if(currentTimeHour >= integerSunriseValue && currentTimeHour < integerSunsetValue) {
         weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
@@ -171,7 +172,6 @@ const renderWeatherData = (data) => {
                 break;
         }
     } 
-
     const sunriseContent = document.createElement('span');
     sunriseContent.textContent = `${sunriseHour}:${sunriseMinutes}:${sunriseSeconds} AM`;
     sunriseDiv.appendChild(sunriseContent);
