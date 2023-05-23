@@ -4,9 +4,14 @@
     margin: 0; padding: 0; border: 0;
     outline: none; box-sizing: border-box; font-family: 'Roboto', sans-serif;
 }
+:root {
+    --bgDefaultColor: rgb(94,84,219); --bgDefaultLinearGr: linear-gradient(180deg, rgba(94,84,219,1) 0%, rgba(77,188,215,1) 80%);
+    --bgDayBaseColor: rgb(41,216,235); --bgDayLinearGr: linear-gradient(180deg, rgba(41,216,235,1) 0%, rgba(35,64,82,0) 100%); 
+    --bgNightBaseColor: rgb(35,64,82); --bgNightLinearGr: linear-gradient(180deg, rgba(35,64,82,1) 0%, rgba(41,216,235,0) 100%);
+}
 body { 
     min-height: 100vh; max-height: 100vh; padding: 1em; transition: 0.3s;
-    background: rgb(94,84,219); background: linear-gradient(180deg, rgba(94,84,219,1) 0%, rgba(77,188,215,1) 80%); 
+    background: var(--bgDefaultColor); background: var(--bgDefaultLinearGr); 
 }
 /* General display */
 body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity, .wind, .sunrise-sunset-container, .sunset-div, .sunrise-div {

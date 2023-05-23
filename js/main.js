@@ -18,6 +18,7 @@ const weatherDetails = document.querySelector('.weather-details');
 const humidityDiv = document.querySelector('.humidity'), windDiv = document.querySelector('.wind');
 const sunsetSunriseDiv = document.querySelector('.sunrise-sunset-container');
 const sunriseDiv = document.querySelector('.sunrise-div'), sunsetDiv = document.querySelector('.sunset-div');
+
 const clearCardContent = () => {
     weatherCard.innerHTML = '', humidityDiv.innerHTML = '', windDiv.innerHTML = '', sunriseDiv.innerHTML = '', sunsetDiv.innerHTML = '';
 }
@@ -159,10 +160,10 @@ const renderWeatherData = (data) => {
     /* Valida si es de día o de noche dependiendo la condición (hora) */
     if(currentTimeHour >= integerSunriseValue && currentTimeHour < integerSunsetValue) {
         weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
-        body.style.background = 'rgb(41,216,235)'; body.style.background = 'linear-gradient(180deg, rgba(41,216,235,1) 0%, rgba(35,64,82,0) 100%)';  
+        body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';  
     } else { 
         weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
-        body.style.background = 'background: rgb(35,64,82)'; body.style.background = 'linear-gradient(180deg, rgba(35,64,82,1) 0%, rgba(41,216,235,0) 100%)';
+        body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
         switch (data.weather[0].main) {
             case 'Clear':
                 weatherImg.src = 'svg/clear-night.svg';
@@ -186,7 +187,7 @@ const renderWeatherData = (data) => {
 /* Muestra un alert */
 const alertSpanText = document.querySelectorAll('.alertSpan');
 const alertSpan = () => { 
-    body.style.background = 'rgb(94,84,219)'; body.style.background = 'linear-gradient(180deg, rgba(94,84,219,1) 0%, rgba(77,188,215,1) 80%)'; 
+    body.style.background = 'var(--bgDefaultColor)'; body.style.background = 'var(--bgDefaultLinearGr)'; 
     weatherCityContainer.style.backgroundImage = 'none', weatherCityContainer.style.opacity = '1', weatherCityContainer.style.height = '60px';    
     clearCardContent();
     $('.alertSpan').css('visibility', 'visible'); 
