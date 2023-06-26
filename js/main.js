@@ -28,12 +28,14 @@ searchButton.addEventListener('click', () => {
     const cityName = document.querySelector('.city-name-input input').value;
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${APIKey}&lang=${lang}`)
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
-        .then(data => {    
-            if(data.cod === 200) weatherCityContainer.style.height = '480px'; weatherCityContainer.style.opacity = '1'; 
-            clearCardContent();
-            weatherCityContainer.style.backgroundImage = 'none';    
-            renderWeatherData(data);  
-
+        .then(data => {             
+            if(data.cod === 200) {
+                weatherCityContainer.style.height = '480px'; weatherCard.style.opacity = '1';
+                clearCardContent();
+                alertSpanText.style.visibility = 'hidden'
+                weatherCityContainer.style.backgroundImage = 'none';
+                renderWeatherData(data);
+            }
         }).catch(error => console.error(error));
 });
 
@@ -43,12 +45,14 @@ searchByLatLot.addEventListener('click', () => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latInput.value}&lon=${lonInput.value}&appid=${APIKey}&lang=${lang}`)
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {
-            if(data.cod === 200) weatherCityContainer.style.height = '480px'; weatherCityContainer.style.opacity = '1';
-            clearCardContent();
-            weatherCityContainer.style.backgroundImage = 'none';    
-            document.querySelector('.city-name-input input').value = '';
-            renderWeatherData(data);
-
+            if (data.cod === 200) {
+                weatherCityContainer.style.height = '480px'; weatherCard.style.opacity = '1';
+                clearCardContent();
+                alertSpanText.style.visibility = 'hidden'
+                weatherCityContainer.style.backgroundImage = 'none';
+                document.querySelector('.city-name-input input').value = '';
+                renderWeatherData(data);
+            }
         }).catch(error => console.error(error));
 })
 
@@ -63,7 +67,6 @@ const renderWeatherData = (data) => {
     const dataTimezone = data.timezone;
     const timezoneInMinutes = dataTimezone / 60; /* 60seg */
     const currentTime = moment().utcOffset(timezoneInMinutes).format('HH:mm:ss A'); 
-    const currentMinutes = moment().minutes();
 
     const countryTimeUTC = document.createElement('p');
     countryTimeUTC.classList.add('city-utc-time');
@@ -147,21 +150,15 @@ const renderWeatherData = (data) => {
         return ('0' + value).slice(-2);
     };      
     /* Se obtiene la hora en tiempo UTC con los métodos correspondientes de Date */
-    const sunriseHour = timeDataFormat(sunriseTime.getUTCHours()); 
-    const sunsetHour = timeDataFormat(sunsetTime.getUTCHours());
-    const sunriseMinutes = timeDataFormat(sunriseTime.getUTCMinutes()); 
-    const sunsetMinutes = timeDataFormat(sunsetTime.getUTCMinutes());
-    const sunriseSeconds = timeDataFormat(sunriseTime.getUTCSeconds()); 
-    const sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds());   
-    
-    const currentTimeHour = parseInt(currentTime), currentTimeMinutes = parseInt(currentMinutes);    
-    const integerSunsetValue = parseInt(sunsetHour), integerSunriseValue = parseInt(sunriseHour), intSunriseMin = parseInt(sunriseMinutes), 
-        intSunsetMin = parseInt(sunsetMinutes);
-    /* Valida si es de día o de noche dependiendo la condición (hora) */
-    if(currentTimeHour >= integerSunriseValue && currentTimeHour < integerSunsetValue) {
-        weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
-        body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';  
-    } else { 
+    const sunriseHour = timeDataFormat(sunriseTime.getUTCHours()), sunsetHour = timeDataFormat(sunsetTime.getUTCHours()),
+        sunriseMinutes = timeDataFormat(sunriseTime.getUTCMinutes()), sunsetMinutes = timeDataFormat(sunsetTime.getUTCMinutes()),
+        sunriseSeconds = timeDataFormat(sunriseTime.getUTCSeconds()), sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds()); 
+
+    const currentHM = currentTime.split(":", 2)   /* Hora - Minutos actual */    
+    var ssHr = parseInt(sunsetHour), ssMin = parseInt(sunsetMinutes)
+    var srHr = parseInt(sunriseHour), srMin = parseInt(sunriseMinutes)
+    /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
+    if(currentHM[0] >= ssHr && currentHM[1] >= ssMin || currentHM[0] <= srHr && currentHM[1] < srMin) {
         weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
         body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
         switch (data.weather[0].main) {
@@ -172,7 +169,11 @@ const renderWeatherData = (data) => {
                 weatherImg.src = 'svg/cloudy-night.svg';
                 break;
         }
-    } 
+    } else {
+        weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
+        body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';  
+    }
+
     const sunriseContent = document.createElement('span');
     sunriseContent.textContent = `${sunriseHour}:${sunriseMinutes}:${sunriseSeconds} AM`;
     sunriseDiv.appendChild(sunriseContent);
@@ -185,14 +186,16 @@ const renderWeatherData = (data) => {
 }
 
 /* Muestra un alert */
-const alertSpanText = document.querySelectorAll('.alertSpan');
-const alertSpan = () => { 
+const alertSpanText = document.querySelector('.alertSpan');
+const alertSpan = () => {    
+    alertSpanText.style.visibility = 'visible', alertSpanText.style.color = 'crimson'
+    alertSpanText.textContent = '\u{26A0} Lo sentimos, esta ciudad no existe o no está disponible \u{26A0}'
     body.style.background = 'var(--bgDefaultColor)'; body.style.background = 'var(--bgDefaultLinearGr)'; 
-    weatherCityContainer.style.backgroundImage = 'none', weatherCityContainer.style.opacity = '1', weatherCityContainer.style.height = '60px';    
+    weatherCityContainer.style.backgroundImage = 'none', weatherCard.style.opacity = '1', weatherCityContainer.style.height = '60px';    
     clearCardContent();
     $('.alertSpan').css('visibility', 'visible'); 
     setTimeout(() => {
-        $('.alertSpan').css('visibility', 'hidden'); 
-        weatherCityContainer.style.opacity = '0'; 
-    }, 4000);
+        alertSpanText.style.color = 'black',  alertSpanText.textContent = 'La información se mostrará aquí:'
+        weatherCard.style.opacity = '0'; 
+    }, 5000);
 }
