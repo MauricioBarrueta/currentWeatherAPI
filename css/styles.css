@@ -138,6 +138,6 @@ body, .container, .city-name-input, .lat-lot-input, .weather-details, .humidity,
     .city-name-input input, .lat-lot-input input { font-size: 15px; }
     .city-name-input input::placeholder, .lat-lot-input input::placeholder { font-size: 13px; }   
     .lat-lot-input span { display: none; }
-    .city-name-input button, .lat-lot-input button { font-size: 12px; margin-left: 5px !important; }
+    .city-name-input button, .lat-lot-input button { font-size: 12px; margin-left: 10px !important; }
     .city-name-input::before, .lat-lot-input::before { font-size: 14px; margin-right: 5px !important; }    
 }

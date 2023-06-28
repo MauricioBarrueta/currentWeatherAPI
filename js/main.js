@@ -1,4 +1,4 @@
-const APIKey = 'a989269a6f7d0e23d578e48436c457dc';
+const key = 'a989269a6f7d0e23d578e48436c457dc';
 const lang = 'es';
 /* Obtiene los permisos de ubicación */
 var latInput = document.getElementById('lat'), lonInput = document.getElementById('lon');
@@ -13,11 +13,10 @@ window.addEventListener('load', () => {
 
 const body = document.getElementById('body')
 const weatherCityContainer = document.querySelector('.weather-city-container');
-const weatherCard = document.querySelector('.weather-card');
-const weatherDetails = document.querySelector('.weather-details');
-const humidityDiv = document.querySelector('.humidity'), windDiv = document.querySelector('.wind');
-const sunsetSunriseDiv = document.querySelector('.sunrise-sunset-container');
-const sunriseDiv = document.querySelector('.sunrise-div'), sunsetDiv = document.querySelector('.sunset-div');
+const weatherCard = document.querySelector('.weather-card'), weatherDetails = document.querySelector('.weather-details'),
+    humidityDiv = document.querySelector('.humidity'), windDiv = document.querySelector('.wind'),
+    sunsetSunriseDiv = document.querySelector('.sunrise-sunset-container'),
+    sunriseDiv = document.querySelector('.sunrise-div'), sunsetDiv = document.querySelector('.sunset-div');
 
 const clearCardContent = () => {
     weatherCard.innerHTML = '', humidityDiv.innerHTML = '', windDiv.innerHTML = '', sunriseDiv.innerHTML = '', sunsetDiv.innerHTML = '';
@@ -26,7 +25,7 @@ const clearCardContent = () => {
 const searchButton = document.querySelector('.city-name-input button');
 searchButton.addEventListener('click', () => {
     const cityName = document.querySelector('.city-name-input input').value;
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${APIKey}&lang=${lang}`)
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${key}&lang=${lang}`)
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {             
             if(data.cod === 200) {
@@ -42,7 +41,7 @@ searchButton.addEventListener('click', () => {
 /* Consulta el clima de acuerdo a la latitud y longitud que se haya ingresado o bien se haya obtenido con la ubicación */
 const searchByLatLot = document.querySelector('.lat-lot-btn');
 searchByLatLot.addEventListener('click', () => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latInput.value}&lon=${lonInput.value}&appid=${APIKey}&lang=${lang}`)
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latInput.value}&lon=${lonInput.value}&appid=${key}&lang=${lang}`)
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {
             if (data.cod === 200) {
@@ -154,11 +153,12 @@ const renderWeatherData = (data) => {
         sunriseMinutes = timeDataFormat(sunriseTime.getUTCMinutes()), sunsetMinutes = timeDataFormat(sunsetTime.getUTCMinutes()),
         sunriseSeconds = timeDataFormat(sunriseTime.getUTCSeconds()), sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds()); 
 
-    const currentHM = currentTime.split(":", 2)   /* Hora - Minutos actual */    
-    var ssHr = parseInt(sunsetHour), ssMin = parseInt(sunsetMinutes)
-    var srHr = parseInt(sunriseHour), srMin = parseInt(sunriseMinutes)
+    const currentHM = currentTime.split(":", 2)   
+    var cHr = parseInt(currentHM[0]), cMin = parseInt(currentHM[1]) /* Hora - Minutos actual */ 
+    var ssHr = parseInt(sunsetHour), ssMin = parseInt(sunsetMinutes) /* Hora - Minutos (sunset) */
+    var srHr = parseInt(sunriseHour), srMin = parseInt(sunriseMinutes) /* Hora - Minutos (sunrise) */
     /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
-    if(currentHM[0] >= ssHr && currentHM[1] >= ssMin || currentHM[0] <= srHr && currentHM[1] < srMin) {
+    if(cHr >= ssHr && cMin >= ssMin || cHr <= srHr && cMin < srMin ) {
         weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
         body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
         switch (data.weather[0].main) {
@@ -171,9 +171,9 @@ const renderWeatherData = (data) => {
         }
     } else {
         weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
-        body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';  
+        body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';
     }
-
+    
     const sunriseContent = document.createElement('span');
     sunriseContent.textContent = `${sunriseHour}:${sunriseMinutes}:${sunriseSeconds} AM`;
     sunriseDiv.appendChild(sunriseContent);
