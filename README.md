@@ -4,4 +4,4 @@
 🇺🇸 This website allows you to consult detailed weather forecasts, can be searched by the user's current location or a specific city, where it's possible to search by name or 
    by coordinates, and also obtains the current time, sunrise and sunset times according to the city's time zone.
 
-![WeatherAPI](https://github.com/MauricioBarrueta/currentWeatherAPI/assets/60496232/3214cd72-0c4e-4fb9-a2f5-ee1fdf60f7c8)
+![WeatherAPI](https://github.com/MauricioBarrueta/currentWeatherAPI/assets/60496232/e4b8d1e6-0a08-46f0-90d5-0f1f063ffefd)
