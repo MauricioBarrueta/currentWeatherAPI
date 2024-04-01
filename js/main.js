@@ -1,5 +1,6 @@
 const key = 'a989269a6f7d0e23d578e48436c457dc';
 const lang = 'es';
+
 /* Obtiene los permisos de ubicación */
 var latInput = document.getElementById('lat'), lonInput = document.getElementById('lon');
 window.addEventListener('load', () => {
@@ -11,9 +12,8 @@ window.addEventListener('load', () => {
     }
 })
 
-const body = document.getElementById('body')
-const weatherCityContainer = document.querySelector('.weather-city-container');
-const weatherCard = document.querySelector('.weather-card'), weatherDetails = document.querySelector('.weather-details'),
+const body = document.getElementById('body'), weatherCityContainer = document.querySelector('.weather-city-container'),
+    weatherCard = document.querySelector('.weather-card'), weatherDetails = document.querySelector('.weather-details'),
     humidityDiv = document.querySelector('.humidity'), windDiv = document.querySelector('.wind'),
     sunsetSunriseDiv = document.querySelector('.sunrise-sunset-container'),
     sunriseDiv = document.querySelector('.sunrise-div'), sunsetDiv = document.querySelector('.sunset-div');
@@ -29,11 +29,11 @@ searchButton.addEventListener('click', () => {
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {             
             if(data.cod === 200) {
-                weatherCityContainer.style.height = '480px'; weatherCard.style.opacity = '1';
-                clearCardContent();
+                weatherCityContainer.style.height = '480px', weatherCard.style.opacity = '1'
+                clearCardContent()
                 alertSpanText.style.visibility = 'hidden'
-                weatherCityContainer.style.backgroundImage = 'none';
-                renderWeatherData(data);
+                weatherCityContainer.style.backgroundImage = 'none'
+                renderWeatherData(data)
             }
         }).catch(error => console.error(error));
 });
@@ -45,17 +45,17 @@ searchByLatLot.addEventListener('click', () => {
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {
             if (data.cod === 200) {
-                weatherCityContainer.style.height = '480px'; weatherCard.style.opacity = '1';
-                clearCardContent();
+                weatherCityContainer.style.height = '480px', weatherCard.style.opacity = '1'
+                clearCardContent()
                 alertSpanText.style.visibility = 'hidden'
-                weatherCityContainer.style.backgroundImage = 'none';
-                document.querySelector('.city-name-input input').value = '';
-                renderWeatherData(data);
+                weatherCityContainer.style.backgroundImage = 'none'
+                document.querySelector('.city-name-input input').value = ''
+                renderWeatherData(data)
             }
         }).catch(error => console.error(error));
 })
 
-/* Renderiza los datos obtenidos y los pasa al DOM */
+/* Renderiza los datos para posteriormente mostrarlos */
 const renderWeatherData = (data) => {
     const countryName = document.createElement('p');
     countryName.classList.add('weather-city-name');
@@ -104,7 +104,7 @@ const renderWeatherData = (data) => {
     }
     weatherCard.appendChild(weatherImg);
 
-    /* Función que obtiene los primeros 2 dígitos de la temperatura para evitar el error de la API (temperatura de 3 dígitos) */
+    /* Se obtienen solo los primeros 2 dígitos de la temperatura y se evita el error de la propia API la cual retorna 3 dígitos */
     const formatLonLatTempValues = (tempValue) => {
         return String(tempValue).substring(0, 2);  
     }   
@@ -154,11 +154,12 @@ const renderWeatherData = (data) => {
         sunriseSeconds = timeDataFormat(sunriseTime.getUTCSeconds()), sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds()); 
 
     const currentHM = currentTime.split(":", 2)   
-    var cHr = parseInt(currentHM[0]), cMin = parseInt(currentHM[1]) /* Hora - Minutos actual */ 
+    var currHr = parseInt(currentHM[0]), currMin = parseInt(currentHM[1]) /* Hora - Minutos actual */ 
     var ssHr = parseInt(sunsetHour), ssMin = parseInt(sunsetMinutes) /* Hora - Minutos (sunset) */
     var srHr = parseInt(sunriseHour), srMin = parseInt(sunriseMinutes) /* Hora - Minutos (sunrise) */
-    /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
-    if(cHr >= ssHr && cMin >= ssMin || cHr <= srHr && cMin < srMin ) {
+    var timeSlot = currentTime.slice(-2) /* AM / PM */
+
+    const isNightTime = () => {
         weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
         body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
         switch (data.weather[0].main) {
@@ -169,6 +170,12 @@ const renderWeatherData = (data) => {
                 weatherImg.src = 'svg/cloudy-night.svg';
                 break;
         }
+    }        
+    /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
+    if(currHr >= ssHr && currMin >= ssMin || currHr <= srHr && currMin < srMin) {
+        isNightTime()
+    } else if(currHr >= 12 && timeSlot == 'AM') {
+        isNightTime()
     } else {
         weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
         body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';
@@ -186,16 +193,16 @@ const renderWeatherData = (data) => {
 }
 
 /* Muestra un alert */
-const alertSpanText = document.querySelector('.alertSpan');
+const alertSpanText = document.querySelector('.alertSpan')
 const alertSpan = () => {    
     alertSpanText.style.visibility = 'visible', alertSpanText.style.color = 'crimson'
     alertSpanText.textContent = '\u{26A0} Lo sentimos, esta ciudad no existe o no está disponible \u{26A0}'
-    body.style.background = 'var(--bgDefaultColor)'; body.style.background = 'var(--bgDefaultLinearGr)'; 
-    weatherCityContainer.style.backgroundImage = 'none', weatherCard.style.opacity = '1', weatherCityContainer.style.height = '60px';    
-    clearCardContent();
-    $('.alertSpan').css('visibility', 'visible'); 
+    body.style.background = 'var(--bgDefaultColor)', body.style.background = 'var(--bgDefaultLinearGr)'
+    weatherCityContainer.style.backgroundImage = 'none', weatherCard.style.opacity = '1', weatherCityContainer.style.height = '60px'
+    clearCardContent()
+    $('.alertSpan').css('visibility', 'visible')
     setTimeout(() => {
-        alertSpanText.style.color = 'black',  alertSpanText.textContent = 'La información se mostrará aquí:'
-        weatherCard.style.opacity = '0'; 
+        alertSpanText.style.color = 'black',  alertSpanText.textContent = 'Los datos se muestran acá:'
+        weatherCard.style.opacity = '0'
     }, 5000);
 }
