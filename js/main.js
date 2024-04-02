@@ -158,9 +158,9 @@ const renderWeatherData = (data) => {
     var ssHr = parseInt(sunsetHour), ssMin = parseInt(sunsetMinutes) /* Hora - Minutos (sunset) */
     var srHr = parseInt(sunriseHour), srMin = parseInt(sunriseMinutes) /* Hora - Minutos (sunrise) */
     var timeSlot = currentTime.slice(-2) /* AM / PM */
-           
+    
     /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
-    if(currHr >= ssHr && currMin >= ssMin || currHr <= srHr && currMin < srMin || currHr >= 1 && currHr < srHr && timeSlot == 'AM') {
+    if(currHr >= ssHr && currMin >= ssMin || currHr <= srHr && currMin < srMin || currHr >= 0 && currHr < srHr && timeSlot == 'AM') {
         weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
         body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
         switch (data.weather[0].main) {
