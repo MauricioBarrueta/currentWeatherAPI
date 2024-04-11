@@ -160,7 +160,7 @@ const renderWeatherData = (data) => {
     var timeSlot = currentTime.slice(-2) /* AM / PM */
     
     /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
-    if(currHr >= ssHr && currMin >= ssMin || currHr <= srHr && currMin < srMin || currHr >= 0 && currHr < srHr && timeSlot == 'AM') {
+    if(currHr >= ssHr && currMin >= ssMin || currHr <= srHr && currMin < srMin || currHr >= 0 && currHr < srHr && timeSlot == 'AM' || currHr >= ssHr && timeSlot == 'PM') {
         weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
         body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
         switch (data.weather[0].main) {
