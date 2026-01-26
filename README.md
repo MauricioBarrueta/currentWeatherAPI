@@ -1,7 +1,7 @@
-🇲🇽 Sitio web que permite consultar el pronóstico del clima de manera detallada, ya sea de la ubicación actual del usuario o de una ciudad en específico, en dónde es posible 
-   buscar por el nombre o por las coordenadas, además de que obtiene la hora actual, la hora en la que amanece y anochece de acuerdo a la zona horaria de la ciudad.
+🇲🇽 Sitio web desarrollado con JavaScript, la biblioteca jQuery, CSS y Bootstrap, publicado mediante GitHub Pages, conectado a la API de OpenWeatherMap (openweathermap.org).
 
-🇺🇸 This website allows you to consult detailed weather forecasts, can be searched by the user's current location or a specific city, where it's possible to search by name or 
-   by coordinates, and also obtains the current time, sunrise and sunset times according to the city's time zone.
+🇺🇸 Website developed with JavaScript, jQuery library, CSS and Bootstrap, published via GitHub Pages, connected to the OpenWeatherMap API (openweathermap.org).
 
-![WeatherAPI](https://github.com/MauricioBarrueta/currentWeatherAPI/assets/60496232/e4b8d1e6-0a08-46f0-90d5-0f1f063ffefd)
+🔗 https://mauriciobarrueta.github.io/currentWeatherAPI/
+
+![weather](https://github.com/user-attachments/assets/39df73d7-b01e-4c6a-85a5-975d43a418bf)
