@@ -4,4 +4,5 @@
 
 🔗 https://mauriciobarrueta.github.io/currentWeatherAPI/
 
-![weather](https://github.com/user-attachments/assets/39df73d7-b01e-4c6a-85a5-975d43a418bf)
+
+<img width="1349" height="653" alt="weather" src="https://github.com/user-attachments/assets/fa6c4e99-3664-4fa4-b830-edb379cf0898" />
