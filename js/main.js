@@ -29,9 +29,9 @@ searchButton.addEventListener('click', () => {
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {             
             if(data.cod === 200) {
-                weatherCityContainer.style.height = '480px', weatherCard.style.opacity = '1'
+                weatherCityContainer.style.height = '100%', weatherCard.style.opacity = '1'
                 clearCardContent()
-                alertSpanText.style.visibility = 'hidden'
+                alertSpanText.style.display = 'none'
                 weatherCityContainer.style.backgroundImage = 'none'
                 renderWeatherData(data)
             }
@@ -45,9 +45,9 @@ searchByLatLot.addEventListener('click', () => {
         .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
         .then(data => {
             if (data.cod === 200) {
-                weatherCityContainer.style.height = '480px', weatherCard.style.opacity = '1'
+                weatherCityContainer.style.height = '100%', weatherCard.style.opacity = '1'
                 clearCardContent()
-                alertSpanText.style.visibility = 'hidden'
+                alertSpanText.style.display = 'none'
                 weatherCityContainer.style.backgroundImage = 'none'
                 document.querySelector('.city-name-input input').value = ''
                 renderWeatherData(data)
@@ -161,7 +161,7 @@ const renderWeatherData = (data) => {
     
     /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
     if(currHr >= ssHr && currMin >= ssMin || currHr <= srHr && currMin < srMin || currHr >= 0 && currHr < srHr && timeSlot == 'AM' || currHr >= ssHr && timeSlot == 'PM') {
-        weatherCityContainer.style.backgroundImage = 'url(img/night.jpg)'; 
+        weatherCityContainer.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)), url(img/night.jpg)"; 
         body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
         switch (data.weather[0].main) {
             case 'Clear':
@@ -172,7 +172,8 @@ const renderWeatherData = (data) => {
                 break;
         }
     } else {
-        weatherCityContainer.style.backgroundImage = 'url(img/day.jpg)';  
+        weatherCityContainer.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)), url('img/day.jpg')"
+
         body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';
     }
     
@@ -190,14 +191,15 @@ const renderWeatherData = (data) => {
 /* Muestra un alert */
 const alertSpanText = document.querySelector('.alertSpan')
 const alertSpan = () => {    
-    alertSpanText.style.visibility = 'visible', alertSpanText.style.color = 'crimson'
-    alertSpanText.textContent = '\u{26A0} Lo sentimos, esta ciudad no existe o no está disponible \u{26A0}'
+    alertSpanText.style.display = 'inline-block'
+    alertSpanText.style.color = 'crimson'
+    alertSpanText.innerHTML = `<i class="fa-regular fa-circle-xmark"></i>Ciudad no disponible`
     body.style.background = 'var(--bgDefaultColor)', body.style.background = 'var(--bgDefaultLinearGr)'
     weatherCityContainer.style.backgroundImage = 'none', weatherCard.style.opacity = '1', weatherCityContainer.style.height = '60px'
     clearCardContent()
     $('.alertSpan').css('visibility', 'visible')
     setTimeout(() => {
-        alertSpanText.style.color = 'black',  alertSpanText.textContent = 'Los datos se muestran acá:'
+        alertSpanText.style.color = '#212529',  alertSpanText.innerHTML = `<i class="fa-solid fa-circle-info"></i>Los datos se mostrarán aquí`
         weatherCard.style.opacity = '0'
     }, 5000);
 }
