@@ -6,47 +6,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="css/styles.css">
     
     <title>Pronóstico del clima</title>
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">   
 </head>
-<body id="body">   
-    <div class="container">    
-        <span id="info">El acceso a su ubicación se utiliza únicamente para obtener el pronóstico del tiempo de su región</span>   
+<body id="body" class="py-3 py-lg-5 px-3">   
+    <div class="container gap-3 p-0">    
+        <span class="d-flex align-items-center justify-content-center gap-3" id="info">
+            <i class="fa-solid fa-location-crosshairs flex-shrink-0"></i>El acceso a su ubicación se utiliza únicamente para obtener el pronóstico del tiempo de su región
+        </span>   
 
-        <div class="city-name-input input-group">
-            <span class="input-group-text"><i class="fa-solid fa-city"></i></span>
-            <input class="form-control" type="text" placeholder="Ciudad" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1)" autofocus required>
+        <div class="w-100 d-flex align-items-center justify-content-center flex-wrap gap-3">
+            <div class="city-name-input input-group">
+                <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
+                <input class="form-control text-capitalize" type="text" placeholder="Ciudad" autofocus required>
 
-            <button class="btn btn-dark" title="Buscar">&#xf002;&nbsp; Buscar</button>
-        </div>
+                <button class="btn btn-dark d-inline-flex align-items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i>Buscar
+                </button>
+            </div>
 
-        <div class="lat-lot-input input-group">
-            <span class="input-group-text"><i class="fa-solid fa-arrows-up-down"></i></span>
-            <input id="lat" type="text" class="form-control"  placeholder="Latitud (N/S)" required>
+            <div class="lat-lot-input input-group">
+                <span class="input-group-text"><i class="fa-solid fa-arrows-up-down"></i></span>
+                <input id="lat" type="text" class="form-control me-2"  placeholder="Lat. (N/S)" required>
             
-            <span class="input-group-text"><i class="fa-solid fa-arrows-left-right"></i></span>
-            <input id="lon" type="text" class="form-control" placeholder="Longitud (E/W)" required>
+                <span class="input-group-text"><i class="fa-solid fa-arrows-left-right"></i></span>
+                <input id="lon" type="text" class="form-control" placeholder="Long. (E/W)" required>
 
-            <button class="lat-lot-btn btn btn-dark" title="Buscar">&#xf002;&nbsp; Buscar</button>
+                <button class="lat-lot-btn btn btn-dark d-inline-flex align-items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i>Buscar
+                </button>
+            </div>
         </div>
+    </div>  
 
-        <div class="weather-city-container">             
-            <span class="alertSpan"><i class="fa-solid fa-circle-info"></i>Los datos se mostrarán aquí</span>
+    <div class="d-flex align-items-center justify-content-center mt-5">
+        <div class="weather-city-container p-3">
+            <span class="alertSpan align-items-center gap-3">
+                <i class="fa-solid fa-circle-info"></i>Los datos del clima se mostrarán aquí
+            </span>
+
             <div class="weather-card">
+                <div class="city-info d-flex justify-content-between align-items-center"></div>
+
                 <div class="weather-details">
                     <div class="humidity"> </div>
                     <div class="wind"> </div>                
                 </div>
+
                 <div class="sunrise-sunset-container">
                     <div class="sunrise-div"> </div>
                     <div class="sunset-div"> </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div>  
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
