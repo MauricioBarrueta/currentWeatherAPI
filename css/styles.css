@@ -88,7 +88,7 @@ span, p { user-select: none; }
     font-size: 14px; 
     margin-bottom: 0 !important;
 }
-.weather-city-name { color: var(--heather-black); }
+.weather-city-name { color: var(--heather-black); text-align: left; }
 .city-utc-time { color: var(--shark-gray); text-align: right; }
 .weather-card img { 
     width: 50%;
