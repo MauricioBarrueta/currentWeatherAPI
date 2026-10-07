@@ -38,7 +38,7 @@ searchButtons.forEach(button => {
                 if (data.cod === 200) {
                     weatherCityContainer.style.width = '400px'
                     weatherCityContainer.style.height = '100%';
-                    weatherCityContainer.style.background = 'linear-gradient(to bottom, #FFFFFF 71%, #E9ECEF 50%)'
+                    weatherCityContainer.style.background = 'linear-gradient(to bottom, #FFFFFF 61%, #E9ECEF 50%)'
                     weatherCard.style.opacity = '1';
                     clearCardContent();
                     alertSpanText.style.display = 'none';
@@ -233,7 +233,8 @@ const alertSpan = () => {
     body.style.background = 'var(--bgDefaultColor)', body.style.background = 'var(--bgDefaultLinearGr)'
     weatherCard.style.opacity = '1', weatherCityContainer.style.height = '60px', weatherCityContainer.style.background = '#FFF'
     clearCardContent()
-    $('.alertSpan').css('visibility', 'visible')
+
+    alertSpanText.style.visibility = 'visible';
     setTimeout(() => {
         alertSpanText.style.color = '#6c757d',  alertSpanText.innerHTML = `<i class="fa-solid fa-circle-info"></i>Los datos del clima se mostrarán aquí`
         weatherCard.style.opacity = '0'
