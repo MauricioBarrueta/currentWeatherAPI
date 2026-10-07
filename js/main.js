@@ -12,70 +12,81 @@ window.addEventListener('load', () => {
     }
 })
 
-const body = document.getElementById('body'), weatherCityContainer = document.querySelector('.weather-city-container'),
-    weatherCard = document.querySelector('.weather-card'), weatherDetails = document.querySelector('.weather-details'),
-    humidityDiv = document.querySelector('.humidity'), windDiv = document.querySelector('.wind'),
-    sunsetSunriseDiv = document.querySelector('.sunrise-sunset-container'),
-    sunriseDiv = document.querySelector('.sunrise-div'), sunsetDiv = document.querySelector('.sunset-div');
+const body = document.getElementById('body'), weatherCityContainer = document.querySelector('.weather-city-container'), weatherCard = document.querySelector('.weather-card'), 
+    weatherDetails = document.querySelector('.weather-details'), humidityDiv = document.querySelector('.humidity'), windDiv = document.querySelector('.wind'),
+    sunsetSunriseDiv = document.querySelector('.sunrise-sunset-container'), sunriseDiv = document.querySelector('.sunrise-div'), sunsetDiv = document.querySelector('.sunset-div'),
+    cityInfo = document.querySelector('.city-info');
+
 
 const clearCardContent = () => {
-    weatherCard.innerHTML = '', humidityDiv.innerHTML = '', windDiv.innerHTML = '', sunriseDiv.innerHTML = '', sunsetDiv.innerHTML = '';
+    weatherCard.innerHTML = humidityDiv.innerHTML = windDiv.innerHTML = sunriseDiv.innerHTML = sunsetDiv.innerHTML = cityInfo.innerHTML = '';
 }
-/* Consulta el clima de acuerdo a la ciudad que se ingrese */
-const searchButton = document.querySelector('.city-name-input button');
-searchButton.addEventListener('click', () => {
-    const cityName = document.querySelector('.city-name-input input').value;
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${key}&lang=${lang}`)
-        .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
-        .then(data => {             
-            if(data.cod === 200) {
-                weatherCityContainer.style.height = '100%', weatherCard.style.opacity = '1'
-                clearCardContent()
-                alertSpanText.style.display = 'none'
-                weatherCityContainer.style.backgroundImage = 'none'
-                renderWeatherData(data)
-            }
-        }).catch(error => console.error(error));
-});
 
-/* Consulta el clima de acuerdo a la latitud y longitud que se haya ingresado o bien se haya obtenido con la ubicación */
-const searchByLatLot = document.querySelector('.lat-lot-btn');
-searchByLatLot.addEventListener('click', () => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latInput.value}&lon=${lonInput.value}&appid=${key}&lang=${lang}`)
-        .then(res => { return res.status === 404 || res.status === 400 ? alertSpan() : res.json(); })
-        .then(data => {
-            if (data.cod === 200) {
-                weatherCityContainer.style.height = '100%', weatherCard.style.opacity = '1'
-                clearCardContent()
-                alertSpanText.style.display = 'none'
-                weatherCityContainer.style.backgroundImage = 'none'
-                document.querySelector('.city-name-input input').value = ''
-                renderWeatherData(data)
-            }
-        }).catch(error => console.error(error));
-})
+/* Consulta el clima de acuerdo con la ciudad o las coordenadas ingresadas */
+const searchButtons = document.querySelectorAll('.city-name-input button, .lat-lot-btn')
+searchButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const cityInput = document.querySelector('.city-name-input input');
+
+        const url = button.classList.contains('lat-lot-btn')
+            ? `https://api.openweathermap.org/data/2.5/weather?lat=${latInput.value}&lon=${lonInput.value}&units=metric&appid=${key}&lang=${lang}`
+            : `https://api.openweathermap.org/data/2.5/weather?q=${cityInput.value}&units=metric&appid=${key}&lang=${lang}`;
+
+        fetch(url)
+            .then(res => res.status === 404 || res.status === 400 ? alertSpan() : res.json())
+            .then(data => {
+                if (data.cod === 200) {
+                    weatherCityContainer.style.width = '400px'
+                    weatherCityContainer.style.height = '100%';
+                    weatherCityContainer.style.background = 'linear-gradient(to bottom, #FFFFFF 71%, #E9ECEF 50%)'
+                    weatherCard.style.opacity = '1';
+                    clearCardContent();
+                    alertSpanText.style.display = 'none';
+
+                    if (button.classList.contains('lat-lot-btn')) {
+                        cityInput.value = '';
+                    } else {
+                        latInput.value = lonInput.value = '';
+                    }
+
+                    renderWeatherData(data);
+                }
+            })
+            .catch(error => console.error(error));
+    });
+});
 
 /* Renderiza los datos para posteriormente mostrarlos */
 const renderWeatherData = (data) => {
     const countryName = document.createElement('p');
     countryName.classList.add('weather-city-name');
     countryName.textContent = data.name + ', ' + data.sys.country;
-    weatherCard.appendChild(countryName);
 
     /* Se obtiene la hora actual de acuerdo a la zona horaria */
-    const dataTimezone = data.timezone;
-    const timezoneInMinutes = dataTimezone / 60; /* 60seg */
-    const currentTime = moment().utcOffset(timezoneInMinutes).format('HH:mm:ss A'); 
-
+    const timezoneInMinutes = data.timezone / 60;
     const countryTimeUTC = document.createElement('p');
     countryTimeUTC.classList.add('city-utc-time');
-    countryTimeUTC.textContent = currentTime;
-    weatherCard.appendChild(countryTimeUTC);
+
+    cityInfo.appendChild(countryName);
+    cityInfo.appendChild(countryTimeUTC);
+    weatherCard.appendChild(cityInfo);
+
+    const updateCountryTime = () => {
+        countryTimeUTC.textContent = moment().utcOffset(timezoneInMinutes).format('HH:mm:ss A');
+    };
+
+    updateCountryTime();
+
+    /* Actualiza la hora de la ciudad cada segundo */
+    setInterval(updateCountryTime, 1000);
 
     const weatherImg = document.createElement('img');
     weatherImg.classList.add('weather-city-img');
-    switch (data.weather[0].main) {
-        case 'Clear':                    
+
+    const weatherCondition = data.weather[0].main;
+
+    switch (weatherCondition) {
+        case 'Clear':
             weatherImg.src = 'svg/clear-day.svg';
             break;
         case 'Rain':
@@ -92,39 +103,48 @@ const renderWeatherData = (data) => {
             break;
         case 'Haze':
             weatherImg.src = 'svg/haze.svg';
-            break;   
+            break;
         case 'Smoke':
-            weatherImg.src = 'svg/smoke.svg'; 
-            break;         
+            weatherImg.src = 'svg/smoke.svg';
+            break;
         case 'Thunderstorm':
             weatherImg.src = 'svg/thunder.svg';
             break;
         default:
             weatherImg.src = 'svg/not-available.svg';
     }
+
     weatherCard.appendChild(weatherImg);
 
-    /* Se obtienen solo los primeros 2 dígitos de la temperatura y se evita el error de la propia API la cual retorna 3 dígitos */
+    /* Se obtienen solo los primeros 2 dígitos de la temperatura */
     const formatLonLatTempValues = (tempValue) => {
-        return String(tempValue).substring(0, 2);  
-    }   
+        return String(tempValue).substring(0, 2);
+    };
+
     const temperatureData = document.createElement('p');
     temperatureData.classList.add('temperature');
     temperatureData.innerHTML = `${parseInt(formatLonLatTempValues(data.main.temp))}<span>°C</span>`;
     weatherCard.appendChild(temperatureData);
-
-    const maxminTemperatureData = document.createElement('span');
-    maxminTemperatureData.classList.add('temperature-max-min');    
-    maxminTemperatureData.innerHTML = `
-        Máx: ${parseInt(formatLonLatTempValues(data.main.temp_max))}<span>°C</span> / Mín: ${parseInt(formatLonLatTempValues(data.main.temp_min))}<span>°C</span>`;
-    weatherCard.appendChild(maxminTemperatureData);
     
+    const cityTempData = document.createElement('div')
+    cityTempData.classList.add('city-temp-data')
+
     const temperatureFeel = document.createElement('span');
     temperatureFeel.classList.add('temperature-feels-like');
-    temperatureFeel.innerHTML = `Sensación real: ${parseInt(formatLonLatTempValues(data.main.feels_like))}<span>°C</span>`;
-    weatherCard.appendChild(temperatureFeel);
+    temperatureFeel.innerHTML = `Sensación: ${parseInt(formatLonLatTempValues(data.main.feels_like))}<span>°C</span>`;
 
-    const temperatureDescriptionData = document.createElement('p');    
+    const maxminTemperatureData = document.createElement('span');
+    maxminTemperatureData.classList.add('temperature-max-min');
+    maxminTemperatureData.innerHTML = `
+        Máx: ${parseInt(formatLonLatTempValues(data.main.temp_max))}<span>°C</span>
+        &nbsp;/&nbsp;
+        Mín: ${parseInt(formatLonLatTempValues(data.main.temp_min))}<span>°C</span>`;
+    
+    cityTempData.appendChild(temperatureFeel)
+    cityTempData.appendChild(maxminTemperatureData)
+    weatherCard.appendChild(cityTempData)
+
+    const temperatureDescriptionData = document.createElement('p');
     temperatureDescriptionData.classList.add('description');
     temperatureDescriptionData.innerHTML = `${data.weather[0].description}`;
     weatherCard.appendChild(temperatureDescriptionData);
@@ -132,74 +152,90 @@ const renderWeatherData = (data) => {
     const humidityValue = document.createElement('span');
     humidityValue.innerHTML = `${data.main.humidity}% <p>Humedad</p>`;
     humidityDiv.appendChild(humidityValue);
+
     const windValue = document.createElement('span');
     windValue.innerHTML = `${parseInt(data.wind.speed)} Km/h <p>Viento</p>`;
     windDiv.appendChild(windValue);
+
     weatherCard.appendChild(weatherDetails);
-  
-    const sunriseTimeData = data;
-    const sunsetTimeData = data;      
-    const { sys: { sunrise }, timezone } = sunriseTimeData, { sys: { sunset } } = sunsetTimeData
-    /* Se obtiene la diferencia entre sunrise, sunset y timezone en UNIX Epoch (01/01/1970 00:00:00 UTC)  */
-    const sunriseTime = new Date((sunrise + timezone) * 1000);
-    const sunsetTime = new Date((sunset + timezone) * 1000);
-    
-    /* Función que convierte el valor tipo Date a un String de 2 dígitos */    
-    const timeDataFormat = (value) => {
-        return ('0' + value).slice(-2);
-    };      
-    /* Se obtiene la hora en tiempo UTC con los métodos correspondientes de Date */
-    const sunriseHour = timeDataFormat(sunriseTime.getUTCHours()), sunsetHour = timeDataFormat(sunsetTime.getUTCHours()),
-        sunriseMinutes = timeDataFormat(sunriseTime.getUTCMinutes()), sunsetMinutes = timeDataFormat(sunsetTime.getUTCMinutes()),
-        sunriseSeconds = timeDataFormat(sunriseTime.getUTCSeconds()), sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds()); 
 
-    const currentHM = currentTime.split(":", 2)   
-    var currHr = parseInt(currentHM[0]), currMin = parseInt(currentHM[1]) /* Hora - Minutos actual */ 
-    var ssHr = parseInt(sunsetHour), ssMin = parseInt(sunsetMinutes) /* Hora - Minutos (sunset) */
-    var srHr = parseInt(sunriseHour), srMin = parseInt(sunriseMinutes) /* Hora - Minutos (sunrise) */
-    var timeSlot = currentTime.slice(-2) /* AM / PM */
-    
-    /* Valida si es de día o de noche comparando la hora actual con la hora en que amanece y anochece */
-    if(currHr >= ssHr && currMin >= ssMin || currHr <= srHr && currMin < srMin || currHr >= 0 && currHr < srHr && timeSlot == 'AM' || currHr >= ssHr && timeSlot == 'PM') {
-        weatherCityContainer.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)), url(img/night.jpg)"; 
-        body.style.background = 'background: var(-bgNightBaseColor)'; body.style.background = 'var(--bgNightLinearGr)';
-        switch (data.weather[0].main) {
-            case 'Clear':
-                weatherImg.src = 'svg/clear-night.svg';
-                break;
-            case 'Clouds':
-                weatherImg.src = 'svg/cloudy-night.svg';
-                break;
-        }
+    /* Se obtiene la hora de amanecer y anochecer */
+    const { sunrise, sunset } = data.sys;
+    /* Se obtiene el timestamp actual */
+    const currentUnixTime = Math.floor(Date.now() / 1000);
+    /* Se determina si es de noche o está atardeciendo */
+    const sunsetTransition = 60 * 60;
+
+    const isNight = currentUnixTime < sunrise || currentUnixTime >= sunset;
+    const isSunset = currentUnixTime >= sunset - sunsetTransition && currentUnixTime < sunset;
+
+    /* Fondo de la página de acuerdo al clima y la hora */
+    if (weatherCondition === 'Rain' || weatherCondition === 'Drizzle' || weatherCondition === 'Thunderstorm') {
+        document.body.style.background = 'var(--bg-rainy)';
+    } else if (isNight) {
+        document.body.style.background = 'var(--bg-night)';
+    } else if (isSunset) {
+        document.body.style.background = 'var(--bg-sunset)';
     } else {
-        weatherCityContainer.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)), url('img/day.jpg')"
-
-        body.style.background = 'var(--bgDayBaseColor)'; body.style.background = 'var( --bgDayLinearGr)';
+        document.body.style.background = 'var(--bg-day)';
     }
-    
+
+    /* Se convierte el amanecer y anochecer a hora local */
+    const sunriseTime = new Date((sunrise + data.timezone) * 1000);
+    const sunsetTime = new Date((sunset + data.timezone) * 1000);
+
+    /* Función que convierte el valor tipo Date a un String de 2 dígitos */
+    const timeDataFormat = (value) => ('0' + value).slice(-2);
+
+    /* Se obtiene la hora y minutos de amanecer y anochecer */
+    const sunriseHour = timeDataFormat(sunriseTime.getUTCHours());
+    const sunriseMinutes = timeDataFormat(sunriseTime.getUTCMinutes());
+    const sunriseSeconds = timeDataFormat(sunriseTime.getUTCSeconds());
+
+    const sunsetHour = timeDataFormat(sunsetTime.getUTCHours());
+    const sunsetMinutes = timeDataFormat(sunsetTime.getUTCMinutes());
+    const sunsetSeconds = timeDataFormat(sunsetTime.getUTCSeconds());
+
+    /* Se muestran las horas de amanecer y anochecer */
     const sunriseContent = document.createElement('span');
     sunriseContent.textContent = `${sunriseHour}:${sunriseMinutes}:${sunriseSeconds} AM`;
     sunriseDiv.appendChild(sunriseContent);
+
     const sunsetContent = document.createElement('span');
     sunsetContent.textContent = `${sunsetHour}:${sunsetMinutes}:${sunsetSeconds} PM`;
     sunsetDiv.appendChild(sunsetContent);
 
-    weatherCard.appendChild(sunsetSunriseDiv);    
-    weatherCard.classList.add('fadeIn'), weatherDetails.classList.add('fadeIn'), sunsetSunriseDiv.classList.add('fadeIn');
-}
+    weatherCard.appendChild(sunsetSunriseDiv);
+    weatherCard.classList.add('fadeIn');
+    weatherDetails.classList.add('fadeIn');
+    sunsetSunriseDiv.classList.add('fadeIn');
+
+    /* Se cambia el icono durante la noche */
+    if (isNight) {
+        switch (weatherCondition) {
+            case 'Clear':
+                weatherImg.src = 'svg/clear-night.svg';
+                break;
+
+            case 'Clouds':
+                weatherImg.src = 'svg/cloudy-night.svg';
+                break;
+        }
+    }
+};
 
 /* Muestra un alert */
 const alertSpanText = document.querySelector('.alertSpan')
 const alertSpan = () => {    
-    alertSpanText.style.display = 'inline-block'
+    alertSpanText.style.display = 'inline-flex'
     alertSpanText.style.color = 'crimson'
-    alertSpanText.innerHTML = `<i class="fa-regular fa-circle-xmark"></i>Ciudad no disponible`
+    alertSpanText.innerHTML = `<i class="fa-solid fa-circle-question"></i>Ciudad no encontrada`
     body.style.background = 'var(--bgDefaultColor)', body.style.background = 'var(--bgDefaultLinearGr)'
-    weatherCityContainer.style.backgroundImage = 'none', weatherCard.style.opacity = '1', weatherCityContainer.style.height = '60px'
+    weatherCard.style.opacity = '1', weatherCityContainer.style.height = '60px', weatherCityContainer.style.background = '#FFF'
     clearCardContent()
     $('.alertSpan').css('visibility', 'visible')
     setTimeout(() => {
-        alertSpanText.style.color = '#212529',  alertSpanText.innerHTML = `<i class="fa-solid fa-circle-info"></i>Los datos se mostrarán aquí`
+        alertSpanText.style.color = '#6c757d',  alertSpanText.innerHTML = `<i class="fa-solid fa-circle-info"></i>Los datos del clima se mostrarán aquí`
         weatherCard.style.opacity = '0'
     }, 5000);
 }

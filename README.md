@@ -1,7 +1,7 @@
-🇲🇽 Sitio web desarrollado con JavaScript, la biblioteca jQuery, CSS y Bootstrap, publicado mediante GitHub Pages, conectado a la API de OpenWeatherMap (openweathermap.org).
+🇲🇽 Sitio web desarrollado con JavaScript, la biblioteca jQuery, CSS y Bootstrap, publicado mediante GitHub Pages y conectado a la API de OpenWeatherMap.
 
-🇺🇸 Website developed with JavaScript, jQuery library, CSS and Bootstrap, published via GitHub Pages, connected to the OpenWeatherMap API (openweathermap.org).
+🇺🇸 Website developed with JavaScript, using the jQuery library, CSS, and Bootstrap, deployed on GitHub Pages and connected to the OpenWeatherMap API.
 
 🔗 https://mauriciobarrueta.github.io/currentWeatherAPI/
 
-![weather](https://github.com/user-attachments/assets/39df73d7-b01e-4c6a-85a5-975d43a418bf)
+<img width="1349" height="653" alt="weather" src="https://github.com/user-attachments/assets/fa6c4e99-3664-4fa4-b830-edb379cf0898" />
