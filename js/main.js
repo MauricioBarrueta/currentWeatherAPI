@@ -38,7 +38,7 @@ searchButtons.forEach(button => {
                 if (data.cod === 200) {
                     weatherCityContainer.style.width = '400px'
                     weatherCityContainer.style.height = '100%';
-                    weatherCityContainer.style.background = 'linear-gradient(to bottom, #FFFFFF 61%, #E9ECEF 50%)'
+                    weatherCityContainer.style.background = 'linear-gradient(to bottom, #FFFFFF 71%, #E9ECEF 50%)'
                     weatherCard.style.opacity = '1';
                     clearCardContent();
                     alertSpanText.style.display = 'none';
